@@ -83,9 +83,13 @@ const Button = styled.div`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  margin-top: 50px;
 `;
 const Box = styled.div`
   width: 100%;
   max-width: 1300px;
   margin-top: 40px;
+  input {
+    margin-bottom: 30px;
+  }
 `;

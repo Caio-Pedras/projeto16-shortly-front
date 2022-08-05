@@ -106,10 +106,14 @@ const Button = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 50px;
   cursor: pointer;
 `;
 const Box = styled.div`
   width: 100%;
   max-width: 1300px;
   margin-top: 40px;
+  input {
+    margin-bottom: 30px;
+  }
 `;
