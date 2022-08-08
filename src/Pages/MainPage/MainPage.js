@@ -48,6 +48,17 @@ export default function MainPage() {
         alert("ocorreu um erro, preencha o link corretamente");
       });
   }
+  function deleteUrl(id) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    axios
+      .delete(`${URL}/urls/${id}`, config)
+      .then((res) => getUsersLinks())
+      .catch((err) => console.log(err));
+  }
   if (!apiResult) {
     return <Loading></Loading>;
   }
@@ -59,7 +70,6 @@ export default function MainPage() {
           <Input
             type="text"
             placeholder="Links que cabem no bolso"
-            // disabled={isLoading}
             value={link}
             onChange={(e) => setLink(e.target.value)}
           />
@@ -74,7 +84,7 @@ export default function MainPage() {
               <h2>{element.shortUrl}</h2>
               <h2>Quantidade de visitantes: {element.visitCount}</h2>
             </UrlInfo>
-            <DeleteBox>
+            <DeleteBox onClick={() => deleteUrl(element.id)}>
               <ion-icon name="trash"></ion-icon>
             </DeleteBox>
           </UrlBox>
