@@ -11,6 +11,7 @@ export default function MainPage() {
   const { URL, token } = useContext(UserContext);
   const [link, setLink] = useState("");
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const [apiResult, setApiResult] = useState();
   useEffect(() => {
     if (!token) navigate("/ranking");
@@ -34,6 +35,8 @@ export default function MainPage() {
       });
   }
   function postLink() {
+    if (isLoading) return;
+    setIsLoading(true);
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -42,13 +45,20 @@ export default function MainPage() {
     const body = { url: link };
     axios
       .post(`${URL}/urls/shorten`, body, config)
-      .then(getUsersLinks())
+      .then((res) => {
+        getUsersLinks();
+        setLink("");
+        setIsLoading(false);
+      })
       .catch((err) => {
         console.log(err);
+        setIsLoading(false);
         alert("ocorreu um erro, preencha o link corretamente");
       });
   }
   function deleteUrl(id) {
+    if (isLoading) return;
+    setIsLoading(true);
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -56,8 +66,14 @@ export default function MainPage() {
     };
     axios
       .delete(`${URL}/urls/${id}`, config)
-      .then((res) => getUsersLinks())
-      .catch((err) => console.log(err));
+      .then((res) => {
+        getUsersLinks();
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        setIsLoading(false);
+        console.log(err);
+      });
   }
   if (!apiResult) {
     return <Loading></Loading>;
@@ -71,6 +87,7 @@ export default function MainPage() {
             type="text"
             placeholder="Links que cabem no bolso"
             value={link}
+            disabled={isLoading}
             onChange={(e) => setLink(e.target.value)}
           />
           <Button onClick={() => postLink()}>
