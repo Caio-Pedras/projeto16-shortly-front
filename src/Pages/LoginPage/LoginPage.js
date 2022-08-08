@@ -10,7 +10,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { URL, setToken } = useContext(UserContext);
+  const { URL, setToken, setUserName } = useContext(UserContext);
   const navigate = useNavigate();
 
   function logIn() {
@@ -24,7 +24,8 @@ export default function LoginPage() {
     axios
       .post(`${URL}/signin`, body)
       .then((res) => {
-        setToken(res.data);
+        setToken(res.data.token);
+        setUserName(res.data.user);
         setIsLoading(false);
         navigate("/");
       })

@@ -18,6 +18,7 @@ export default function MainPage() {
   }, [token]);
 
   function getUsersLinks() {
+    if (!token) return;
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,

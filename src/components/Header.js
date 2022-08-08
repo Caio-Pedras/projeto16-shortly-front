@@ -4,11 +4,11 @@ import { Link } from "react-router-dom";
 import { UserContext } from "../userContext/userContext";
 import logo from "../assets/imgs/logo.svg";
 export default function Header() {
-  const { token, setToken } = useContext(UserContext);
+  const { token, setToken, userName, setUserName } = useContext(UserContext);
   return (
     <HeaderWrapper>
       <Buttons>
-        {token ? <p>Seja bem-vindo(a),</p> : <p></p>}
+        {token ? <p>Seja bem-vindo(a), {userName}</p> : <p></p>}
         {token ? (
           <RightButtons>
             <Link to="/">
@@ -18,7 +18,14 @@ export default function Header() {
               <span>Ranking</span>
             </Link>
 
-            <span onClick={() => setToken()}>Sair</span>
+            <span
+              onClick={() => {
+                setToken();
+                setUserName();
+              }}
+            >
+              Sair
+            </span>
           </RightButtons>
         ) : (
           <RightButtons>
