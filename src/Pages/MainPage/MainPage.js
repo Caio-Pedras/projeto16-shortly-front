@@ -1,28 +1,55 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../userContext/userContext";
 import axios from "axios";
 import Input from "../../components/Input";
 import Header from "../../components/Header";
+import Loading from "../../components/Loading";
 
 export default function MainPage() {
   const { URL, token } = useContext(UserContext);
-  const [link, setLink] = useState();
-  const apiResult = [
-    {
-      id: 1,
-      shortUrl: "asdasd46",
-      url: "www.www.w.com.br",
-      visitCount: 23,
-    },
-    {
-      id: 2,
-      shortUrl: "5a9wq7",
-      url: "www.lllasdasdasd.com.br",
-      visitCount: 99,
-    },
-  ];
+  const [link, setLink] = useState("");
+  const navigate = useNavigate();
+  const [apiResult, setApiResult] = useState();
+  useEffect(() => {
+    if (!token) navigate("/ranking");
+    getUsersLinks();
+  }, [token]);
+
+  function getUsersLinks() {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    console.log(config);
+    axios
+      .get(`${URL}/users/me`, config)
+      .then((res) => setApiResult(res.data.shortenedUrls))
+      .catch((err) => {
+        console.log(err);
+        alert("ocorreu um erro");
+      });
+  }
+  function postLink() {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const body = { url: link };
+    axios
+      .post(`${URL}/urls/shorten`, body, config)
+      .then(getUsersLinks())
+      .catch((err) => {
+        console.log(err);
+        alert("ocorreu um erro, preencha o link corretamente");
+      });
+  }
+  if (!apiResult) {
+    return <Loading></Loading>;
+  }
   return (
     <Container>
       <Header></Header>
@@ -35,12 +62,12 @@ export default function MainPage() {
             value={link}
             onChange={(e) => setLink(e.target.value)}
           />
-          <Button>
+          <Button onClick={() => postLink()}>
             <p>Encurtar link</p>
           </Button>
         </CreateBox>
-        {apiResult.map((element) => (
-          <UrlBox>
+        {apiResult.map((element, index) => (
+          <UrlBox key={index}>
             <UrlInfo>
               <p>{element.url}</p>
               <h2>{element.shortUrl}</h2>
